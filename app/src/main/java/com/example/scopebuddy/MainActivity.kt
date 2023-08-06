@@ -44,21 +44,26 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
             // "orientationAngles" now has up-to-date information.
 
-            val xDegrees = 360 - orientationAngles[0] * 180 / PI
+            val xDegrees = orientationAngles[0] * 180 / PI
             val yDegrees = abs(orientationAngles[1] * 180 / PI)
             val zDegrees = orientationAngles[2] * 180 / PI
 
             runOnUiThread {
                 val compassView = findViewById<ImageView>(R.id.ImageCompass)
-                compassView.rotation = xDegrees.toFloat()
+                compassView.rotation = (360 - xDegrees).toFloat()
 
                 val textElevation = findViewById<TextView>(R.id.TextElevation)
                 val roundedElevationString = BigDecimal(yDegrees).setScale(3, RoundingMode.HALF_EVEN)
                 val elevationString = "$roundedElevationString°"
                 textElevation.text = elevationString
 
+                var cardinalDegrees: Double = if (xDegrees < 0) {
+                    xDegrees + 360
+                } else {
+                    xDegrees
+                }
                 val textCardinal = findViewById<TextView>(R.id.TextCardinal)
-                val roundedCardinalString = BigDecimal(xDegrees).setScale(3, RoundingMode.HALF_EVEN)
+                val roundedCardinalString = BigDecimal(cardinalDegrees).setScale(3, RoundingMode.HALF_EVEN)
                 val cardinalString = "$roundedCardinalString°"
                 textCardinal.text = cardinalString
             }
